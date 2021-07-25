@@ -4,6 +4,7 @@ using System.Text;
 using Core;
 using datalayer.Interfaces;
 using datalayer.Models;
+using datalayer.DTO;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -34,15 +35,15 @@ namespace datalayer.Repositories
         }
 
 
-        public async Task AddAsync(IReadOnlyList<PersonDepartment> item)
+        public async Task AddAsync(IReadOnlyList<PersonDepartmentDTO> item)
         {
             foreach(var p in item.ToList())
             {
-                await _context.PersonDepartments.AddAsync(p);
+                await _context.PersonDepartments.AddAsync(new PersonDepartment { Id = p.Id, PersonInfoKey = p.PersonInfoKey, DepartmentInfoKey = p.DepartmentInfoKey} );
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task UpdateAsync(IReadOnlyList<PersonDepartment> item)
+        public async Task UpdateAsync(IReadOnlyList<PersonDepartmentDTO> item)
         {
             foreach (var p in item.ToList())
             {
@@ -58,6 +59,7 @@ namespace datalayer.Repositories
                     
                 }
             }
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)

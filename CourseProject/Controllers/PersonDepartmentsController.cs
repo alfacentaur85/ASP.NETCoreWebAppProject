@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using datalayer.Interfaces;
 using datalayer.Models;
+using datalayer.DTO;
 
 namespace CourseProject.Controllers
 {
@@ -26,7 +27,7 @@ namespace CourseProject.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Add([FromBody] IReadOnlyList<PersonDepartment> request)
+        public async Task<IActionResult> Add([FromBody] IReadOnlyList<PersonDepartmentDTO> request)
         {
             await _repository.AddAsync(request);
 
@@ -58,7 +59,7 @@ namespace CourseProject.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody] IReadOnlyList<PersonDepartment> request)
+        public async Task<IActionResult> Update([FromBody] IReadOnlyList<PersonDepartmentDTO> request)
         {
             await _repository.UpdateAsync(request);
 
