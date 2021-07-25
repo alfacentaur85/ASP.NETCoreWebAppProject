@@ -8,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using datalayer.Interfaces;
 using datalayer.Repositories;
-using migrations;
+using datalayer.Models;
 
 namespace CourseProject
 {
@@ -37,6 +37,8 @@ namespace CourseProject
             });
   
             services.AddTransient<IPersonRepository, PersonRepository>();
+            services.AddTransient<IDepartmentRepository, DepartmentRepository>();
+            services.AddTransient<IPersonDepartmentsRepository, PersonDepartmentsRepository>();
 
             services.AddDbContext<ApplicationDataContext>(options =>
             {

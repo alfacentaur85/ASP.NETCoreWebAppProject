@@ -12,67 +12,67 @@ namespace CourseProject.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("[controller]")]
-    public class PersonController : ControllerBase
+    [Route("PD")]
+    public class PersonDepartmentsController : ControllerBase
     {
-        
-        private readonly ILogger<PersonController> _logger;
-        private readonly IPersonRepository _repository;
 
-        public PersonController(IPersonRepository repository, ILogger<PersonController> logger)
+        private readonly ILogger<PersonDepartmentsController> _logger;
+        private readonly IPersonDepartmentsRepository _repository;
+
+        public PersonDepartmentsController(IPersonDepartmentsRepository repository, ILogger<PersonDepartmentsController> logger)
         {
             _logger = logger;
             _repository = repository;
         }
 
-        [HttpPost("persons")]
-        public async Task<IActionResult> Add([FromBody] IReadOnlyList<Person> request)
+        [HttpPost("register")]
+        public async Task<IActionResult> Add([FromBody] IReadOnlyList<PersonDepartment> request)
         {
             await _repository.AddAsync(request);
-                
-            _logger.LogInformation("Added Person(s) to DB");
+
+            _logger.LogInformation("Register PD(s) to DB");
 
             return Ok();
         }
 
-        [HttpGet("persons/{id}")]
+        [HttpGet("get/{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            
+
             var response = await _repository.GetByIdAsync(id);
 
-            _logger.LogInformation("Get Person by Id from DB");
+            _logger.LogInformation("Get PD by Id from DB");
 
             return Ok(response);
         }
 
-        [HttpGet("persons")]
+        [HttpGet("getPagination")]
         public async Task<IActionResult> GetWithPagination([FromQuery] int skip, int take, string search)
         {
 
             var response = await _repository.GetWithPaginationAsync(skip, take, search);
 
-            _logger.LogInformation("Get Persons with pagination");
+            _logger.LogInformation("Get PD with pagination");
 
             return Ok(response);
         }
 
-        [HttpPut("persons")]
-        public async Task<IActionResult> Update([FromBody] IReadOnlyList<Person> request)
+        [HttpPut("update")]
+        public async Task<IActionResult> Update([FromBody] IReadOnlyList<PersonDepartment> request)
         {
             await _repository.UpdateAsync(request);
 
-            _logger.LogInformation("Updated Person(s) in DB");
+            _logger.LogInformation("Updated PD(s) in DB");
 
             return Ok();
         }
 
-        [HttpDelete("persons/{id}")]
+        [HttpDelete("unregister/{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             await _repository.DeleteAsync(id);
 
-            _logger.LogInformation("Deleted Person By Id");
+            _logger.LogInformation("Unregister PD By Id");
 
             return Ok();
         }

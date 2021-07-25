@@ -7,69 +7,63 @@ using datalayer.Models;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Immutable;
 
 namespace datalayer.Repositories
 {
-    public class PersonRepository : IPersonRepository
+    public class PersonDepartmentsRepository : IPersonDepartmentsRepository
     {
         private ApplicationDataContext _context;
 
-        public PersonRepository(ApplicationDataContext context)
+        public PersonDepartmentsRepository(ApplicationDataContext context)
         {
             _context = context;
         }
 
-        public async Task<IReadOnlyList<Person>> GetByIdAsync(int id)
+        public async Task<IReadOnlyList<PersonDepartment>> GetByIdAsync(int id)
         {
-            return await _context.Persons
-                .Where(p => p.Id == id)
-                .ToArrayAsync();
+            return await _context.PersonDepartments
+                .Where(p => p.Id == id).Include(p => p.Person).Include(g => g.Department)
+                .ToListAsync();
         }
 
-        public async Task<IReadOnlyList<Person>> GetByNameAsync(string name)
+     
+        public async Task<IReadOnlyList<PersonDepartment>> GetWithPaginationAsync(int skip, int take, string search)
         {
-                return await _context.Persons
-                    .Where(p => p.FirstName.Contains(name))
-                    .ToArrayAsync();
-        }
-
-        public async Task<IReadOnlyList<Person>> GetWithPaginationAsync(int skip, int take, string search)
-        {
-            return await _context.Persons.Where(p => p.FirstName.Contains(search)).Skip(skip).Take(take).ToArrayAsync();
+            return await _context.PersonDepartments.Where(p => p.Id == 1).Skip(skip).Take(take).Include(p => p.Person).Include(g => g.Department).ToArrayAsync();
         }
 
 
-        public async Task AddAsync(IReadOnlyList<Person> item)
+        public async Task AddAsync(IReadOnlyList<PersonDepartment> item)
         {
             foreach(var p in item.ToList())
             {
-                await _context.Persons.AddAsync(p);
+                await _context.PersonDepartments.AddAsync(p);
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task UpdateAsync(IReadOnlyList<Person> item)
+        public async Task UpdateAsync(IReadOnlyList<PersonDepartment> item)
         {
             foreach (var p in item.ToList())
             {
 
                 var entity = await _context
-                               .Persons
+                               .PersonDepartments
                                .Where(entity => entity.Id == p.Id)
                                .FirstOrDefaultAsync();
                 if (entity != null)
                 {
-                    entity.Age = p.Age;
-                    entity.Email = p.Email;
-                    entity.FirstName = p.FirstName;
-                    entity.LastName = p.LastName;
-                    await _context.SaveChangesAsync();
+                    
+                    entity.Id = p.Id;
+                    
                 }
             }
         }
+
         public async Task DeleteAsync(int id)
         {
             var entity = await _context
-                .Persons
+                .PersonDepartments
                 .Where(entity => entity.Id == id)
                 .FirstOrDefaultAsync();
             if (entity != null)
