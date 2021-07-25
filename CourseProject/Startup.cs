@@ -34,11 +34,11 @@ namespace CourseProject
                     c.SwaggerDoc("v1", new OpenApiInfo { Title = "CourseProject", Version = "v1" }); 
                 });
 
-            });
-  
+            }); 
+
+            services.AddTransient<IPersonDepartmentRepository, PersonDepartmentRepository>();
             services.AddTransient<IPersonRepository, PersonRepository>();
             services.AddTransient<IDepartmentRepository, DepartmentRepository>();
-            services.AddTransient<IPersonDepartmentsRepository, PersonDepartmentsRepository>();
 
             services.AddDbContext<ApplicationDataContext>(options =>
             {

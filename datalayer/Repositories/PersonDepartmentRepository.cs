@@ -1,78 +1,63 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Core;
+﻿using System.Collections.Generic;
 using datalayer.Interfaces;
 using datalayer.Models;
-using datalayer.DTO;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Immutable;
+using datalayer.Responses;
+using datalayer.Requests; 
+
 
 namespace datalayer.Repositories
 {
-    public class PersonDepartmentsRepository : IPersonDepartmentsRepository
+    public class PersonDepartmentRepository : IPersonDepartmentRepository
     {
         private ApplicationDataContext _context;
 
-        public PersonDepartmentsRepository(ApplicationDataContext context)
+        public PersonDepartmentRepository(ApplicationDataContext context)
         {
             _context = context;
         }
 
-        public async Task<IReadOnlyList<PersonDepartment>> GetByIdAsync(int id)
-        {
-            return await _context.PersonDepartments
-                .Where(p => p.Id == id).Include(p => p.Person).Include(g => g.Department)
-                .ToListAsync();
-        }
+      
 
-     
-        public async Task<IReadOnlyList<PersonDepartment>> GetWithPaginationAsync(int skip, int take, string search)
-        {
-            return await _context.PersonDepartments.Where(p => p.Id == 1).Skip(skip).Take(take).Include(p => p.Person).Include(g => g.Department).ToArrayAsync();
-        }
-
-
-        public async Task AddAsync(IReadOnlyList<PersonDepartmentDTO> item)
+        public async Task AddAsync(IReadOnlyList<PersonDepartmentRequest> item)
         {
             foreach(var p in item.ToList())
             {
-                await _context.PersonDepartments.AddAsync(new PersonDepartment { Id = p.Id, PersonInfoKey = p.PersonInfoKey, DepartmentInfoKey = p.DepartmentInfoKey} );
+                await _context.PersonsDepartments.AddAsync(new PersonDepartment {Id = p.Id, DepartmentId = p.DepartmentId, PersonId = p.PersonId});
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task UpdateAsync(IReadOnlyList<PersonDepartmentDTO> item)
-        {
-            foreach (var p in item.ToList())
-            {
 
-                var entity = await _context
-                               .PersonDepartments
-                               .Where(entity => entity.Id == p.Id)
-                               .FirstOrDefaultAsync();
-                if (entity != null)
-                {
-                    
-                    entity.Id = p.Id;
-                    
-                }
-            }
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int personId, int departmentId)
         {
-            var entity = await _context
-                .PersonDepartments
-                .Where(entity => entity.Id == id)
+            var entity = await _context.PersonsDepartments
+                .Where(entity => entity.PersonId == personId && entity.DepartmentId == departmentId)
                 .FirstOrDefaultAsync();
             if (entity != null)
             {
                 _context.Remove(entity);
                 await _context.SaveChangesAsync();
             } 
+        }
+
+        public async Task UpdateAsync(IReadOnlyList<PersonDepartmentRequest> item)
+        {
+            foreach (var p in item.ToList())
+            {
+
+                var entity = await _context
+                               .PersonsDepartments
+                               .Where(entity => entity.Id == p.Id)
+                               .FirstOrDefaultAsync();
+                if (entity != null)
+                {
+                    entity.PersonId = p.PersonId;
+                    entity.DepartmentId = p.DepartmentId;
+                    await _context.SaveChangesAsync();
+                }
+            }
         }
     }
 }

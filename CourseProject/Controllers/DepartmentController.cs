@@ -7,12 +7,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using datalayer.Interfaces;
 using datalayer.Models;
+using datalayer.Requests;
+using datalayer.Responses;
 
 namespace CourseProject.Controllers
 {
-    [Authorize]
     [ApiController]
-    [Route("[controller]")]
+    [Route("")]
     public class DepartmentController : ControllerBase
     {
 
@@ -26,7 +27,7 @@ namespace CourseProject.Controllers
         }
 
         [HttpPost("departments")]
-        public async Task<IActionResult> Add([FromBody] IReadOnlyList<Department> request)
+        public async Task<IActionResult> Add([FromBody] IReadOnlyList<DepartmentRequest> request)
         {
             await _repository.AddAsync(request);
 
@@ -35,13 +36,24 @@ namespace CourseProject.Controllers
             return Ok();
         }
 
-        [HttpGet("departments/{id}")]
-        public async Task<IActionResult> GetById([FromRoute] int id)
+        [HttpGet("departmentsbyid")]
+        public async Task<IActionResult> GetById([FromQuery] int id)
         {
 
             var response = await _repository.GetByIdAsync(id);
 
             _logger.LogInformation("Get Department by Id from DB");
+
+            return Ok(response);
+        }
+
+        [HttpGet("departmentsbyname")]
+        public async Task<IActionResult> GetByName([FromQuery] string name)
+        {
+
+            var response = await _repository.GetByNameAsync(name);
+
+            _logger.LogInformation("Get Department by name from DB");
 
             return Ok(response);
         }
@@ -58,7 +70,7 @@ namespace CourseProject.Controllers
         }
 
         [HttpPut("departments")]
-        public async Task<IActionResult> Update([FromBody] IReadOnlyList<Department> request)
+        public async Task<IActionResult> Update([FromBody] IReadOnlyList<DepartmentRequest> request)
         {
             await _repository.UpdateAsync(request);
 

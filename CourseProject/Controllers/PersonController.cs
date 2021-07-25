@@ -7,12 +7,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using datalayer.Interfaces;
 using datalayer.Models;
+using datalayer.Requests;
 
 namespace CourseProject.Controllers
 {
-    [Authorize]
     [ApiController]
-    [Route("[controller]")]
+    [Route("")]
     public class PersonController : ControllerBase
     {
         
@@ -26,7 +26,7 @@ namespace CourseProject.Controllers
         }
 
         [HttpPost("persons")]
-        public async Task<IActionResult> Add([FromBody] IReadOnlyList<Person> request)
+        public async Task<IActionResult> Add([FromBody] IReadOnlyList<PersonRequest> request)
         {
             await _repository.AddAsync(request);
                 
@@ -35,13 +35,24 @@ namespace CourseProject.Controllers
             return Ok();
         }
 
-        [HttpGet("persons/{id}")]
-        public async Task<IActionResult> GetById([FromRoute] int id)
+        [HttpGet("personsbyid")]
+        public async Task<IActionResult> GetById([FromQuery] int id)
         {
             
             var response = await _repository.GetByIdAsync(id);
 
             _logger.LogInformation("Get Person by Id from DB");
+
+            return Ok(response);
+        }
+
+        [HttpGet("personsbyname")]
+        public async Task<IActionResult> GetByName([FromQuery] string name )
+        {
+
+            var response = await _repository.GetByNameAsync(name);
+
+            _logger.LogInformation("Get Person by name from DB");
 
             return Ok(response);
         }
@@ -58,7 +69,7 @@ namespace CourseProject.Controllers
         }
 
         [HttpPut("persons")]
-        public async Task<IActionResult> Update([FromBody] IReadOnlyList<Person> request)
+        public async Task<IActionResult> Update([FromBody] IReadOnlyList<PersonRequest> request)
         {
             await _repository.UpdateAsync(request);
 

@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using datalayer.Models;
 using Core;
-using datalayer.Responses;
 using datalayer.Requests;
-
+using datalayer.Responses;
 
 namespace datalayer.Interfaces
 {
-    public interface IDepartmentRepository : IRepository<DepartmentResponse, DepartmentRequest>
+    public interface IPersonDepartmentRepository : IRepositoryPD<PersonDepartmentResponse, PersonDepartmentRequest>
     {
-
     }
 }

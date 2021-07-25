@@ -4,6 +4,8 @@ using datalayer.Models;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using datalayer.Responses;
+using datalayer.Requests; 
 
 
 namespace datalayer.Repositories
@@ -17,35 +19,42 @@ namespace datalayer.Repositories
             _context = context;
         }
 
-        public async Task<IReadOnlyList<Department>> GetByIdAsync(int id)
+        public async Task<IReadOnlyList<DepartmentResponse>> GetByIdAsync(int id)
         {
             return await _context.Departments
+                .Select(p => new DepartmentResponse{Id = p.Id, Name = p.Name, Persons = p.Persons})
                 .Where(p => p.Id == id)
                 .ToArrayAsync();
         }
 
-        public async Task<IReadOnlyList<Department>> GetByNameAsync(string name)
+        public async Task<IReadOnlyList<DepartmentResponse>> GetByNameAsync(string name)
         {
                 return await _context.Departments
-                    .Where(p => p.Name.Contains(name))
+                    .Select(p => new DepartmentResponse { Id = p.Id, Name = p.Name, Persons = p.Persons })
+                    .Where(p => p.Name.Contains(string.IsNullOrEmpty(name) ? "" : name))
                     .ToArrayAsync();
         }
 
-        public async Task<IReadOnlyList<Department>> GetWithPaginationAsync(int skip, int take, string search)
+        public async Task<IReadOnlyList<DepartmentResponse>> GetWithPaginationAsync(int skip, int take, string search)
         {
-            return await _context.Departments.Where(p => p.Name.Contains(search)).Skip(skip).Take(take).ToArrayAsync();
+            return await _context.Departments
+                .Select(p => new DepartmentResponse { Id = p.Id, Name = p.Name, Persons = p.Persons })
+                .Where(p => p.Name.Contains(string.IsNullOrEmpty(search) ? "" : search))
+                .Skip(skip)
+                .Take(take)
+                .ToArrayAsync();
         }
 
 
-        public async Task AddAsync(IReadOnlyList<Department> item)
+        public async Task AddAsync(IReadOnlyList<DepartmentRequest> item)
         {
             foreach(var p in item.ToList())
             {
-                await _context.Departments.AddAsync(p);
+                await _context.Departments.AddAsync(new Department() { Id = p.Id, Name = p.Name});
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task UpdateAsync(IReadOnlyList<Department> item)
+        public async Task UpdateAsync(IReadOnlyList<DepartmentRequest> item)
         {
             foreach (var p in item.ToList())
             {
