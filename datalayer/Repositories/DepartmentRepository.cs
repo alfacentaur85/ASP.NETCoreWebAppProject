@@ -50,7 +50,7 @@ namespace datalayer.Repositories
         {
             foreach(var p in item.ToList())
             {
-                await _context.Departments.AddAsync(new Department() { Id = p.Id, Name = p.Name});
+                await _context.Departments.AddAsync(new Department() { /*Id = p.Id,*/ Name = p.Name});
                 await _context.SaveChangesAsync();
             }
         }

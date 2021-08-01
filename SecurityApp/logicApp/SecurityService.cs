@@ -4,27 +4,29 @@ using System.Collections.Generic;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
-using datalayer;
+using System.Linq;
+using datalayer.Repositories;
 
-
-namespace Security
+namespace Secutrity
 {
     public sealed class SecurityService : ISecurityService
     {
         private IDictionary<string, AuthResponse> _users = new Dictionary<string, AuthResponse>();
 
-        private ApplicationDataContext _context;
+        private UserRepository _repository;
 
-        public SecurityService(ApplicationDataContext context)
+        public SecurityService(UserRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         public const string SecretCode = "df;ko%k;ky)=-=965;ljdfjmfg;i";
+
         public TokenResponse Authenticate(string user, string password)
         {
-            
-            if (string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(password))
+            var r = _repository.GetByLoginPasswordAsync(user, password);
+
+            if (r.Result is null)
             {
                 return null;
             }

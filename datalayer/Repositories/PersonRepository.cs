@@ -25,8 +25,6 @@ namespace datalayer.Repositories
         {
             return await _context.Persons
                 .Select(p => new PersonResponse() { Id = p.Id, FirstName = p.FirstName, LastName = p.LastName, Age = p.Age, Email = p.Email, Departments = p.Departments})
-     
-                /*.Include(s => s.Departments)*/
                 .Where(p => p.Id == id)
                 .ToArrayAsync();
         }

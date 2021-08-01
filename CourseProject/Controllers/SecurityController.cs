@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System;
+using Microsoft.Extensions.Logging;
+using datalayer.Interfaces;
+using Secutrity;
+
 
 namespace CourseProject.Controllers
 {
@@ -10,10 +13,14 @@ namespace CourseProject.Controllers
     public sealed class SecurityController : ControllerBase
     {
         private readonly ISecurityService _userService;
+        private readonly ILogger<SecurityController> _logger;
+        private readonly ISecurityRepository _repository;
 
-        public SecurityController(ISecurityService userService)
+        public SecurityController(ISecurityService userService, ISecurityRepository repository, ILogger<SecurityController> logger)
         {
             _userService = userService;
+            _logger = logger;
+            _repository = repository;
         }
 
         [AllowAnonymous]

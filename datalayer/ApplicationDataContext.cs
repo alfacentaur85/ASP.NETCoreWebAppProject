@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
 using datalayer.Models;
+using Secutrity;
 
 namespace datalayer
 {
@@ -12,16 +11,13 @@ namespace datalayer
 
         }
 
+        public DbSet<User> Users { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Person> Persons { get; set; }
 
         public DbSet<PersonDepartment> PersonsDepartments { get; set; }
        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            /*modelBuilder.Entity<Person>()
-                .HasMany(c => c.Departments)
-                .WithMany(s => s.Persons)
-                .UsingEntity(j => j.ToTable("PersonDepartment"));*/
             modelBuilder
                 .Entity<Person>()
                 .HasMany(c => c.Departments)
@@ -40,6 +36,9 @@ namespace datalayer
                     j.HasKey(t => new { t.PersonId, t.DepartmentId });
                     j.ToTable("PersonDepartment");
                 });
+            modelBuilder.Entity<User>()
+              .HasIndex(u => u.UserName)
+              .IsUnique();
         }
 
     }

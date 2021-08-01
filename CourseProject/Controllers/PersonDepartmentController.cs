@@ -17,6 +17,7 @@ namespace CourseProject.Controllers
     public class PersonDepartmentController : ControllerBase
     {
         private readonly ILogger<PersonDepartmentController> _logger;
+
         private readonly IPersonDepartmentRepository _repository;
 
         public PersonDepartmentController(IPersonDepartmentRepository repository, ILogger<PersonDepartmentController> logger)

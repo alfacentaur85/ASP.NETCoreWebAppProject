@@ -8,11 +8,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using datalayer.Interfaces;
 using datalayer.Repositories;
-using Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System;
+using Secutrity;
 
 namespace CourseProject
 {
@@ -28,7 +28,9 @@ namespace CourseProject
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ISecurityService, SecurityService>();
+            
+
+            services.AddTransient<ISecurityService, SecurityService>();
 
             services.AddCors();
 
@@ -54,17 +56,6 @@ namespace CourseProject
                });
 
 
-
-            // Register the Swagger generator, defining 1 or more Swagger documents
-            /*services.AddSwaggerGen(c =>
-            {
-
-                services.AddSwaggerGen(c =>
-                {
-                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "CourseProject", Version = "v1" }); 
-                });
-
-            });*/
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CourseProject", Version = "v1" });
@@ -91,12 +82,15 @@ namespace CourseProject
                     }
                 });
             });
-      
 
 
+            services.AddTransient<ISecurityRepository, SecurityRepository>();
             services.AddTransient<IPersonDepartmentRepository, PersonDepartmentRepository>();
             services.AddTransient<IPersonRepository, PersonRepository>();
             services.AddTransient<IDepartmentRepository, DepartmentRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+
+
 
             services.AddDbContext<ApplicationDataContext>(options =>
             {
