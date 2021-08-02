@@ -9,6 +9,7 @@ using datalayer.Requests;
 namespace CourseProject.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("")]
     public class UserController : ControllerBase
     {
